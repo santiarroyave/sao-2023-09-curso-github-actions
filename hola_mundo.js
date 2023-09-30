@@ -1,7 +1,7 @@
-const username = process.env.USERNAME;
+const USERNAME = process.env.USERNAME;
 
-if (username) {
-    console.log(`¡Hola, ${username} desde GitHub!`)
+if (USERNAME) {
+    console.log(`¡Hola, ${USERNAME} desde GitHub!`)
 }else{
     console.log("¡Hola mundo!")
 }
