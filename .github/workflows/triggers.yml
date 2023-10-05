@@ -1,0 +1,61 @@
+name: Triggers
+run-name: ¡Estoy aprendiendo a usar diferentes Triggers!
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+      # opened: cada vez que se abra un pull request
+      # synchronize: si hacemos push en una rama que tenga un pull request abierto
+      # reopened: cuando abrimos un pull request que anteriormente habiamos cerrado
+    paths:
+      - '**.js'
+  issues:
+    types:
+      - labeled
+        # se activara cuando creemos un nuevo issue y le pongamos una etiqueta
+  workflow_dispatch:
+    inputs:
+      lenguaje_favorito:
+        description: 'Lenguaje favorito'
+        default: JavaScript
+        required: true
+        type: choice
+        options:
+          - JavaScript
+          - Python
+          - Go
+      nombre:
+        description: 'Tu nombre'
+        required: true
+        default: Santi
+        type: string
+  schedule:
+    - cron: '15 22 * * *'
+jobs:
+  hola-mundo-manual:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Definir nombre
+        run: echo "USERNAME=${{ inputs.nombre }}" >> $GITHUB_ENV
+      - name: Definir lenguaje
+        run: echo "LANGUAGE=${{ inputs.lenguaje_favorito }}" >> $GITHUB_ENV
+      - name: Correr script
+        run: node hola_lenguaje.js
+
+  hola-mundo:
+    # este workflow solo lo activa cuando el trigger que lo lanzó no sea un workflow_dispatch
+    if: ${{ github.event_name != 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Definir variable
+        run: echo "USERNAME=${{ github.actor }}" >> $GITHUB_ENV
+      - name: Correr script
+        run: node hola_mundo.js
+
+  
